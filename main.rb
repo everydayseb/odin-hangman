@@ -11,5 +11,21 @@ dictionary = File.readlines(dictionary_file)
                  .map(&:chomp)
                  .select { |word| word.size.between?(MIN_WORD_LENGTH, MAX_WORD_LENGTH) }
 word = dictionary.sample
-guessed_letters = ['a']
-puts word_with_known_letters(word, guessed_letters)
+guessed_letters = []
+lives_remaining = 5
+game_over = false
+
+until game_over
+  puts word_with_known_letters(word, guessed_letters)
+  puts "Lives remaining: #{lives_remaining}"
+  print 'Enter guess: '
+  guess = gets.chomp
+  guessed_letters.push(guess) if guessed_letters.none?(guess)
+  puts "Guessed letters: #{guessed_letters.sort.join(' ')}"
+
+  lives_remaining -= 1 if word.chars.none?(guess)
+
+  game_over = true if word_with_known_letters(word, guessed_letters) == word || lives_remaining <= 0
+end
+
+puts "Word was #{word}"
